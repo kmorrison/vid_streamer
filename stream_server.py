@@ -24,15 +24,33 @@ def stream_file(request):
         ROOT_FILE_DIR,
         request.matchdict['file_to_serve'],
     )
-    print filename
+    os.stat(filename)
     file_reader = FileApp(filename)
     return request.get_response(file_reader)
+
+test_body = """
+<html>
+<head>
+</head>
+
+<body>
+<video controls>
+<source src="/srv/The.Walking.Dead.S04E05.HDTV.x264-2HD.mp4">
+</video>
+</body>
+</html>
+"""
+
+@view_config(route_name='test_display')
+def test_display(request):
+    return Response(test_body)
 
 def make_app():
     config = Configurator()
 
     config.add_route('test_stream', '/test')
     config.add_route('stream_file', '/srv/{file_to_serve}')
+    config.add_route('test_display', '/test_display')
 
     config.scan()
 
