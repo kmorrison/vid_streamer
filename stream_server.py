@@ -7,7 +7,8 @@ from webob.static import FileApp
 from wsgiref.simple_server import make_server
 
 
-ROOT_FILE_DIR = '/Users/kyle/Movies'
+ROOT_FILE_DIR = '/share'
+#ROOT_FILE_DIR = '/Users/kyle/Movies'
 
 @view_config(route_name='test_stream')
 def stream_video(request):
@@ -17,6 +18,10 @@ def stream_video(request):
     )
     file_reader = FileApp(filename)
     return request.get_response(file_reader)
+
+@view_config(route_name='status')
+def status(request):
+    return Response("Hello World.")
 
 @view_config(route_name='stream_file')
 def stream_file(request):
@@ -49,13 +54,14 @@ def make_app():
     config = Configurator()
 
     config.add_route('test_stream', '/test')
+    config.add_route('status', '/status')
     config.add_route('stream_file', '/srv/{file_to_serve}')
     config.add_route('test_display', '/test_display')
 
     config.scan()
 
     app = config.make_wsgi_app()
-    server = make_server('0.0.0.0', 8080, app)
+    server = make_server('0.0.0.0', 8000, app)
     return server
 
 if __name__ == '__main__':
